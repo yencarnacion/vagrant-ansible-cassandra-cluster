@@ -1,0 +1,18 @@
+== vagrant-ansible-cassandra-cluster
+Provision a 3 node DSC30 Cassandra cluster using Ansible, Vagrant, and Virtualbox.
+
+=== License
+The MIT License (MIT).  See LICENSE.adoc
+
+=== How to run
+.To get this project working, perform the minimum steps:
+----
+ $ vagrant up
+ $ ansible-playbook cassandra.yml
+----
+
+Nodes will be running on: 192.168.33.10, 192.168.33.11, 192.168.33.12
+
+To SSH into a node do `vagrant ssh <nodename>` where nodes are named cassandra01, cassandra02, and cassandra03.
+
+Remember to do `vagrant destroy` when you are done.

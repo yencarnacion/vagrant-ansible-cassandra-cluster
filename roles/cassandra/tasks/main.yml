@@ -1,0 +1,40 @@
+---
+- name: ensure the datastax apt repository is present
+  apt_repository:
+    repo='deb http://debian.datastax.com/community stable main'
+    state=present
+  become_user: root
+
+- name: get datastax repo key 
+  shell: curl -L http://debian.datastax.com/debian/repo_key | sudo apt-key add -
+  become_user: root
+
+- name: update apt
+  action: apt update_cache=yes
+  become_user: root
+
+- name: install dsc30 and cassandra-tools
+  action: apt pkg="{{item}}" state=installed
+  with_items:
+    - dsc30
+    - cassandra-tools
+  become_user: root
+
+- name: stop cassandra
+  service: name=cassandra state=stopped
+  become_user: root
+
+- name: delete data from cassandra
+  shell: rm  -Rf */*
+  args:
+    chdir: /var/lib/cassandra/
+  become_user: root
+
+- name: copy cassandra.yaml template
+  template: src=cassandra.yaml.j2 dest=/etc/cassandra/cassandra.yaml owner=root group=root mode=0644
+  become_user: root
+
+- name: start cassandra
+  service: name=cassandra state=started
+  become_user: root
+
